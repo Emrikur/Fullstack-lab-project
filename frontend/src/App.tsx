@@ -1,43 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header"
+import Footer from "./components/Footer"
+import Home from "./pages/Home/Home"
+import Contact from "./pages/Contact/Contact"
+import TravelRoutes from "./pages/TravelRoutes/TravelRoutes"
+import BookTrip from "./pages/BookTrip/BookTrip";
 
 function App() {
 
-  const [isGreeting, setGreeting] = useState([])
+return(
+  <>
+    <Router>
+      <Header/>
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => {
-          fetch("http://localhost:8080/")
-          .then((Response) => Response.json())
-          .then((data) => {
-            //alert(data)
-            setGreeting(data)
-            console.log(isGreeting[0].text)
-          })
-        }}
-        >Get info from backend</button>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+        <Route path="booktrip" element={<BookTrip/>}/>
+        <Route path="contact" element={<Contact/>}/>
+        <Route path="travelroutes" element={<TravelRoutes/>}/>
+      </Routes>
 
-        {isGreeting !== undefined ? <p>isGreeting[0].text</p> : <p>Naaffing</p>}
-
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <Footer/>
+    </Router>
+  </>
+    )
 }
-
 export default App
