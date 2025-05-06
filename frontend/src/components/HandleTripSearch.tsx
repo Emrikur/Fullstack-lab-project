@@ -178,7 +178,7 @@ function HandleTripSearch() {
             {/* //TODO: Going-From-City-Input */}
             <Formlabel>
               <FormParagraph>From:</FormParagraph>
-              <input
+              <input id="departure_id"
                 onChange={fromCity}
                 style={{ padding: "5px 15px 5px 0px", border: "none" }}
                 type="text"
@@ -216,7 +216,7 @@ function HandleTripSearch() {
           {/* Going To City-Input */}
             <Formlabel>
               <FormParagraph>To:</FormParagraph>
-              <input
+              <input id="destination_id"
                 onChange={toCity}
                 style={{ padding: "5px 15px 5px 0px", border: "none" }}
                 type="text"
@@ -284,7 +284,7 @@ function HandleTripSearch() {
               </div>
             </LocationInput>
             <LocationInput>
-              <Formlabel>
+
                 <FormParagraph>How many:</FormParagraph>
                 <div
                   style={{
@@ -308,7 +308,7 @@ function HandleTripSearch() {
                   />
                   <img src={Passenger} alt="Icon of passenger" />
                 </div>
-              </Formlabel>
+
             </LocationInput>
           </div>
           <FormButton>Search</FormButton>

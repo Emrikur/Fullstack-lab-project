@@ -17,8 +17,18 @@ DROP TABLE IF EXISTS stops;
 DROP TABLE IF EXISTS stations;
 DROP TABLE IF EXISTS routes;
 DROP TABLE IF EXISTS zones;
+DROP TABLE IF EXISTS staff;
 
 
+
+
+CREATE TABLE staff (
+    id INTEGER PRIMARY KEY  AUTOINCREMENT UNIQUE,
+    name  TEXT NOT NULL,
+    role TEXT NOT NULL,
+    email TEXT NOT NULL
+
+);
 CREATE TABLE zones (
     id INTEGER PRIMARY KEY UNIQUE,
     name  TEXT NOT NULL,
@@ -77,27 +87,27 @@ CREATE TABLE timetable (
 INSERT INTO zones (id, name, price) VALUES(1, 'A', 27);
 INSERT INTO zones (id, name, price) VALUES(2, 'B', 37);
 INSERT INTO zones (id, name, price) VALUES(3, 'C', 47);
-INSERT INTO stations (name, zone_id ) VALUES('Göteborg Central', 1);
-INSERT INTO stations (name, zone_id ) VALUES('Kungälvs Resecentrum', 2);
-INSERT INTO stations (name, zone_id ) VALUES('Älvängens Resecentrum', 3);
+INSERT INTO stations (name, zone_id ) VALUES('göteborg Central', 1);
+INSERT INTO stations (name, zone_id ) VALUES('kungälv Resecentrum', 2);
+INSERT INTO stations (name, zone_id ) VALUES('älvängen Resecentrum', 3);
 
 INSERT INTO routes (  route_to_name,  route_from_name,  route_to_id,  route_from_id,  zone_id,  price)
-SELECT 'Göteborg Central','Kungälvs Resecentrum', 1, 2, id, price FROM zones WHERE name='A' ;
+SELECT 'göteborg Central','kungälv Resecentrum', 1, 2, id, price FROM zones WHERE name='A' ;
 
 INSERT INTO routes (route_to_name,route_from_name, route_to_id, route_from_id, zone_id, price)
-SELECT 'Göteborg Central','Älvängens Resecentrum', 1, 3, id, price FROM zones WHERE name='A' ;
+SELECT 'göteborg Central','älvängen Resecentrum', 1, 3, id, price FROM zones WHERE name='A' ;
 
 INSERT INTO routes (route_to_name,route_from_name, route_to_id, route_from_id, zone_id, price)
-SELECT 'Kungälvs Resecentrum','Göteborg Central', 2, 1, id, price FROM zones WHERE name='B' ;
+SELECT 'kungälv Resecentrum','göteborg Central', 2, 1, id, price FROM zones WHERE name='B' ;
 
 INSERT INTO routes (route_to_name,route_from_name, route_to_id, route_from_id, zone_id, price)
-SELECT 'Kungälvs Resecentrum', 'Älvängens Resecentrum', 2, 3, id, price FROM zones WHERE name='B';
+SELECT 'kungälv Resecentrum', 'älvängen Resecentrum', 2, 3, id, price FROM zones WHERE name='B';
 
 INSERT INTO routes (route_to_name,route_from_name, route_to_id, route_from_id, zone_id, price)
-SELECT 'Älvängens Resecentrum','Göteborg Central', 3, 1, id, price FROM zones WHERE name='C';
+SELECT 'älvängen Resecentrum','göteborg Central', 3, 1, id, price FROM zones WHERE name='C';
 
 INSERT INTO routes (route_to_name,route_from_name, route_to_id, route_from_id, zone_id, price)
-SELECT 'Älvängens Resecentrum','Kungälvs Resecentrum', 3, 2,id, price FROM zones WHERE name='C';
+SELECT 'älvängen Resecentrum','kungälv Resecentrum', 3, 2,id, price FROM zones WHERE name='C';
 
 
 
@@ -159,3 +169,11 @@ INSERT INTO stops (name,zone_id) VALUES( 'bohus station', 3);
 INSERT INTO stops (name ,zone_id) VALUES( 'nödinge station', 3);
 INSERT INTO stops (name ,zone_id) VALUES( 'nol station', 3);
 INSERT INTO stops (name, station_id,zone_id) VALUES( 'älvängen resecentrum',3, 3);
+
+
+INSERT INTO staff (name, role, email) VALUES( 'Emily Johnson','Sales Manager', 'emily.johnson@litravels.com');
+INSERT INTO staff (name, role, email) VALUES( 'Michael Williams', 'Support Specialist', 'michael.williams@litravels.com');
+INSERT INTO staff (name, role, email) VALUES( 'Sophia Brown','Accountant', 'sophia.brown@litravels.com');
+INSERT INTO staff (name, role, email) VALUES( 'James Davis','Research Analyst', 'james.davis@litravels.com');
+INSERT INTO staff (name, role, email) VALUES( 'Emma Miller','Quality Assurance Engineer', 'emma.miller@litravels.com');
+INSERT INTO staff (name, role, email) VALUES( 'Olivia Wilson','Research Analyst', 'olivia.wilson@litravels.com');
