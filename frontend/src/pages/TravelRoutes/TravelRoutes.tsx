@@ -32,12 +32,11 @@ function TravelRoutes() {
   const [timeTable, setTimeTable] = useState([]);
   const [stations, setStations] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:8080/")
+    fetch("http://localhost:8080/routes")
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
         setStations(result);
-        // console.log(result[0].trips.stations)
       });
   }, []);
   useEffect(() => {
@@ -46,7 +45,6 @@ function TravelRoutes() {
       .then((result) => {
         console.log(result);
         setTimeTable(Object.values(result));
-        // console.log(result[0].trips.stations)
       });
   }, []);
 
@@ -54,7 +52,6 @@ function TravelRoutes() {
     <>
       <Main>
         <MainContainer>
-          {" "}
           {/* Div */}
           {timeTable &&
             stations.map(
@@ -66,8 +63,8 @@ function TravelRoutes() {
                 <div key={station.id}>
                   <h2>
                     {station.route_from_name} - {station.route_to_name}{" "}
-                  </h2>{" "}
-                  {/* Lägg in namn i databas */}
+                  </h2>
+
                   <h6>The line depart every full hour from the end stops</h6>
                   <div
                     style={{
@@ -110,23 +107,3 @@ function TravelRoutes() {
 }
 
 export default TravelRoutes;
-
-{
-  /* <h1>Routes</h1>
-      <div>
-        <h2>Göteborg Central - Älvängen</h2>
-        <h4>Stops:</h4>
-        <p>| Älvängen - Nol - Nödinge - Bohus - Surte - Gamlestan - Göteborg Central |</p>
-      </div>
-      <div>
-        <h2>Eriksdal - Ytterby Station</h2>
-        <h4>Stops:</h4>
-        <p>| Eriksdal - Fars hatt - Kexfabriken - Kungälv Centrum - Kongahälla Center - Ytterby Station |</p>
-      </div>
-
-      <div>
-        <h2>Hjalmar Brantingplatsen - Korsvägen</h2>
-        <h4>Stops:</h4>
-        <p>| Hjalmar brantingplatsen - Göteborg Central - Heden - Korsvägen |</p>
-      </div> */
-}

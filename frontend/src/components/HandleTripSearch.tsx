@@ -22,6 +22,8 @@ const TripBooking = styled.div`
   justify-content: center;
   height: 60%;
   padding-bottom: 40px;
+  padding-top: 40px;
+
 `;
 const LocationInput = styled.div`
   background-color: white;
@@ -62,17 +64,14 @@ const FormButton = styled.button`
   color: white;
 `;
 
-/* interface TimetableProps {
-oddNumbers:Array<string|number>,
-evenNumbers:Array<string|number>
-} */
+
 function HandleTripSearch() {
   useEffect(() => {
-    fetch("http://localhost:8080/")
+    fetch("http://localhost:8080/routes")
       .then((response) => response.json())
       .then((result) => {
         setTrip(result);
-        //console.log(result[0].trips.stations)
+
       });
   }, []);
   useEffect(() => {
@@ -169,16 +168,17 @@ function HandleTripSearch() {
   return (
     <>
       <TripBooking>
-        {" "}
+
         {/* //TODO:rootElement */}
         <h1 style={{ color: "white" }}>Book trip</h1>
         <form onSubmit={goSearch}>
           <LocationInput>
-            {" "}
+
             {/* //TODO: Going-From-City-Input */}
             <Formlabel>
               <FormParagraph>From:</FormParagraph>
-              <input id="departure_id"
+              <input
+                id="departure_id"
                 onChange={fromCity}
                 style={{ padding: "5px 15px 5px 0px", border: "none" }}
                 type="text"
@@ -213,14 +213,15 @@ function HandleTripSearch() {
           </LocationInput>
 
           <LocationInput>
-          {/* Going To City-Input */}
+            {/* Going To City-Input */}
             <Formlabel>
               <FormParagraph>To:</FormParagraph>
-              <input id="destination_id"
+              <input
+                id="destination_id"
                 onChange={toCity}
                 style={{ padding: "5px 15px 5px 0px", border: "none" }}
                 type="text"
-                value={isDestination}
+                value={isDestination.toLocaleLowerCase()}
               />
             </Formlabel>
             <div style={{ display: "flex", gap: "15px" }}>
@@ -284,31 +285,29 @@ function HandleTripSearch() {
               </div>
             </LocationInput>
             <LocationInput>
-
-                <FormParagraph>How many:</FormParagraph>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-around",
-                  }}
-                >
-                  <img
-                    onClick={removePassenger}
-                    style={{ height: "24px", width: "24px" }}
-                    src={minusButton}
-                    alt=""
-                  />
-                  <p>{isPassengers}</p>
-                  <img
-                    onClick={addPassenger}
-                    style={{ cursor: "point", height: "24px", width: "24px" }}
-                    src={plusButton}
-                    alt=""
-                  />
-                  <img src={Passenger} alt="Icon of passenger" />
-                </div>
-
+              <FormParagraph>How many:</FormParagraph>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                }}
+              >
+                <img
+                  onClick={removePassenger}
+                  style={{ height: "24px", width: "24px" }}
+                  src={minusButton}
+                  alt=""
+                />
+                <p>{isPassengers}</p>
+                <img
+                  onClick={addPassenger}
+                  style={{ cursor: "point", height: "24px", width: "24px" }}
+                  src={plusButton}
+                  alt=""
+                />
+                <img src={Passenger} alt="Icon of passenger" />
+              </div>
             </LocationInput>
           </div>
           <FormButton>Search</FormButton>

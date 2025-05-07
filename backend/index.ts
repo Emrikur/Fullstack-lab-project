@@ -3,11 +3,13 @@ import express from "express";
 import * as sqlite from "sqlite";
 import { Database } from "sqlite";
 import sqlite3 from "sqlite3";
+import path from "path";
 
 console.log("startar express");
 const app = express();
 
 app.use(cors());
+app.use("/staff_IMG", express.static(path.join(__dirname, "staff_IMG")));
 
 let database;
 (async () => {
@@ -18,43 +20,26 @@ let database;
 
   await database.run("PRAGMA foreign_keys = ON");
 
-  app.get("/", async (request, response) => {
+  app.get("/routes", async (request, response) => {
     const routeName = await database.all("SELECT * FROM routes");
-    //console.log(stationName)
-
-
     response.send(routeName);
   });
 
   app.use(express.json());
 
-  app.post("/", async (request, response) => {
-
-//TODO: Oklart vad jag försöker få ut av den här posten...
-
-    const getStations = await database.all(`SELECT * FROM stations WHERE name=?`,[request.body.to]);
-    getStations[0].id
-    console.log(request.body)
-    //console.log(request.body) */
-    //const hej = `Traveling from ${request.body.from} to ${request.body.to}`
-    //const setTrip = await database.all("SELECT * FROM stations");
-
-
-   response.send(getStations);
-  });
   app.get("/timetable", async (request, response) => {
-
     const getTimetable = await database.all(`SELECT * FROM timetable`);
-    //console.log(getTimetable)
-    //console.log(request.body) */
-    //const hej = `Traveling from ${request.body.from} to ${request.body.to}`
-    //const setTrip = await database.all("SELECT * FROM stations");
 
+    response.send(getTimetable);
+  });
 
-   response.send(getTimetable);
+  app.get("/contact", async (request, response) => {
+    const getContacts = await database.all(`SELECT * FROM staff`);
+
+    response.send(getContacts);
   });
 })();
 
 app.listen(8080, () => {
-  console.log("Redo på http://localhost:8080/");
+  console.log(`Redo på http://localhost:8080/`);
 });
