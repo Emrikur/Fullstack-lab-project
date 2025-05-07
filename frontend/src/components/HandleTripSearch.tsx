@@ -23,7 +23,6 @@ const TripBooking = styled.div`
   height: 60%;
   padding-bottom: 40px;
   padding-top: 40px;
-
 `;
 const LocationInput = styled.div`
   background-color: white;
@@ -64,14 +63,12 @@ const FormButton = styled.button`
   color: white;
 `;
 
-
 function HandleTripSearch() {
   useEffect(() => {
     fetch("http://localhost:8080/routes")
       .then((response) => response.json())
       .then((result) => {
         setTrip(result);
-
       });
   }, []);
   useEffect(() => {
@@ -79,87 +76,92 @@ function HandleTripSearch() {
       .then((response) => response.json())
       .then((result) => {
         setTimetable(Object.values(result));
-
-        //if(result.id)
       });
   }, []);
 
-  const [isTrip, setTrip] = useState([]);
-  const [isPassengers, setPassengers] = useState(0);
-  const [isDeparture, setDeparture] = useState("");
-  const [isDestination, setDestination] = useState("");
-  const [isSearched, setSearched] = useState(false);
-  const [isCost, setCost] = useState(0);
-  const [isTotalCost, setTotalCost] = useState(0);
-  const [isTimeTable, setTimetable] = useState([]);
-
+  const [trip, setTrip] = useState(
+    Array<{
+      route_from_name: string;
+      route_to_name: string;
+      id: number;
+      price: number;
+      route_from_id: number;
+    }> || []
+  );
+  const [passengers, setPassengers] = useState(0);
+  const [departure, setDeparture] = useState("");
+  const [destination, setDestination] = useState("");
+  const [searched, setSearched] = useState(false);
+  const [cost, setCost] = useState(0);
+  const [totalcost, setTotalCost] = useState(0);
+  const [timetable, setTimetable] = useState(
+    Array<{ time: string; id: number }> || []
+  );
+  const cityFrom = trip.find((city) => city.route_from_name === departure);
+  const cityTo = trip.find((city) => city.route_to_name === destination);
   function fromCity(props: { target: { value: string } }) {
     setDeparture(props.target.value);
-    console.log(props.target.value);
   }
 
   function toCity(props: { target: { value: string } }) {
     setDestination(props.target.value);
-    console.log(props.target.value);
   }
 
   function addPassenger() {
-    if (isPassengers <= 9) {
-      setPassengers(isPassengers + 1);
-      setSearched(false);
-      console.log("Nr of passengers", isPassengers + 1);
-      //setTotalCost((isPassengers + 1) * isCost)
-    } else {
-      alert("May only book 10 tickets");
+    if (cityFrom && cityTo) {
+      if (passengers <= 9) {
+        setPassengers(passengers + 1);
+        setSearched(false);
+        console.log("Nr of passengers", passengers + 1);
+      } else {
+        alert("May only book 10 tickets");
+      }
     }
   }
   function removePassenger() {
-    if (isPassengers >= 1) {
-      setPassengers(isPassengers - 1);
-      setSearched(false);
-      console.log("Nr of passengers", isPassengers - 1);
+    if (cityFrom && cityTo) {
+      if (passengers >= 1) {
+        setPassengers(passengers - 1);
+        setSearched(false);
+        console.log("Nr of passengers", passengers - 1);
+      }
     }
   }
   useEffect(() => {
-    setTotalCost(isPassengers * isCost);
-    console.log("Total cost körs", isPassengers * isCost);
-  }, [isPassengers, isCost]);
+    setTotalCost(passengers * cost);
+    console.log("Total cost körs", passengers * cost);
+  }, [passengers, cost]);
 
   function goSearch(event: { preventDefault: () => void }) {
     event.preventDefault();
 
-    if (isSearched === false) {
-      setSearched(true);
-    } else if (isSearched === true) {
-      setSearched(false);
+    if (destination.length >= 1 && departure.length >= 1) {
+      if (cityFrom && cityTo) {
+        if (searched === false) {
+          setSearched(true);
+        } else if (searched === true) {
+          setSearched(false);
+        }
+      } else {
+        setSearched(false);
+        alert("No such station/stop");
+      }
+    } else {
+      alert("You need to fill in both departure and arrival-stop");
     }
-    //console.log("Submitted");
   }
 
   function handleSearch(city: { name: string; price: number }) {
-    //console.log(city);
     setDestination(city.name);
-    //setCost(0);
 
-    if (isTimeTable) {
-      for (let i = 0; i < isTimeTable.length; i++) {
-        //console.log(result[i])
+    if (timetable) {
+      for (let i = 0; i < timetable.length; i++) {
         if (i % 2 === 0) {
-          evenNumbers.push(isTimeTable[i]);
+          evenNumbers.push(timetable[i]);
         } else {
-          oddNumbers.push(isTimeTable[i]);
+          oddNumbers.push(timetable[i]);
         }
       }
-
-      /* evenNumbers.filter((evenTime => evenTime.time.includes(currentTime.valuea)))
-        oddNumbers.filter((oddTime => oddTime.time.includes(currentTime)))
-        console.log(currentTime)
-
-        console.log("Check evenNumbersMatch "+ checkEvenNumberTime[0])
-        console.log("Check oddNumbersMatch "+ checkOddNumberTime[0]) */
-
-      /*   console.log("Even numbers"+ evenNumbers[0].time)
-        console.log("Odd numbers"+ oddNumbers[0].time) */
     }
 
     setCost(city.price);
@@ -168,12 +170,10 @@ function HandleTripSearch() {
   return (
     <>
       <TripBooking>
-
         {/* //TODO:rootElement */}
         <h1 style={{ color: "white" }}>Book trip</h1>
         <form onSubmit={goSearch}>
           <LocationInput>
-
             {/* //TODO: Going-From-City-Input */}
             <Formlabel>
               <FormParagraph>From:</FormParagraph>
@@ -182,24 +182,21 @@ function HandleTripSearch() {
                 onChange={fromCity}
                 style={{ padding: "5px 15px 5px 0px", border: "none" }}
                 type="text"
-                value={isDeparture}
+                value={departure}
               />
             </Formlabel>
             <div style={{ display: "flex", gap: "15px" }}>
-              {isTrip
+              {trip
                 .filter(
-                  (searchCity: {
-                    route_from_name: string;
-                    route_from_id: number;
-                  }) =>
+                  (searchCity) =>
                     searchCity.route_from_name &&
-                    searchCity.route_from_name !== isDeparture &&
+                    searchCity.route_from_name !== departure &&
                     searchCity.route_from_id &&
-                    searchCity.route_from_name.includes(isDeparture)
+                    searchCity.route_from_name.includes(departure)
                 )
                 .map(
                   (city: { route_from_name: string; id: number }) =>
-                    isDeparture.length > 0 && (
+                    departure.length > 0 && (
                       <p
                         key={city.id}
                         onClick={() => setDeparture(city.route_from_name)}
@@ -221,16 +218,16 @@ function HandleTripSearch() {
                 onChange={toCity}
                 style={{ padding: "5px 15px 5px 0px", border: "none" }}
                 type="text"
-                value={isDestination.toLocaleLowerCase()}
+                value={destination.toLocaleLowerCase()}
               />
             </Formlabel>
             <div style={{ display: "flex", gap: "15px" }}>
-              {isTrip
+              {trip
                 .filter(
                   (searchCity: { route_to_name: string }) =>
                     searchCity.route_to_name &&
-                    searchCity.route_to_name !== isDestination &&
-                    searchCity.route_to_name.includes(isDestination)
+                    searchCity.route_to_name !== destination &&
+                    searchCity.route_to_name.includes(destination)
                 )
                 .map(
                   (city: {
@@ -238,7 +235,7 @@ function HandleTripSearch() {
                     id: number;
                     price: number;
                   }) =>
-                    isDestination.length > 0 && (
+                    destination.length > 0 && (
                       <p
                         key={city.id}
                         onClick={() =>
@@ -277,10 +274,10 @@ function HandleTripSearch() {
                 }}
               >
                 <div>Total cost</div>
-                {isPassengers === 0 ? (
+                {passengers === 0 ? (
                   <img src={Zero} alt="Icon of Zero" />
                 ) : (
-                  <p>{isTotalCost}</p>
+                  <p>{totalcost}</p>
                 )}
               </div>
             </LocationInput>
@@ -299,7 +296,7 @@ function HandleTripSearch() {
                   src={minusButton}
                   alt=""
                 />
-                <p>{isPassengers}</p>
+                <p>{passengers}</p>
                 <img
                   onClick={addPassenger}
                   style={{ cursor: "point", height: "24px", width: "24px" }}
@@ -316,13 +313,13 @@ function HandleTripSearch() {
 
       <TripResults>
         <h2>{currentTime}</h2>
-        {isDeparture &&
-        isDestination &&
-        isPassengers !== 0 &&
-        isSearched !== false &&
-        isTrip &&
-        isTimeTable ? (
-          isTimeTable
+        {cityFrom &&
+        cityTo &&
+        passengers !== 0 &&
+        searched !== false &&
+        trip &&
+        timetable ? (
+          timetable
             .slice(9, 22)
             .map((TTInfo: { time: string; id: number }, index) => (
               <div
@@ -351,7 +348,7 @@ function HandleTripSearch() {
                     margin: "auto",
                   }}
                 >
-                  <h4>{isDeparture} </h4>
+                  <h4>{departure} </h4>
 
                   <p>{evenNumbers[index].time}</p>
 
@@ -359,7 +356,7 @@ function HandleTripSearch() {
                     src={ArrowRight}
                     alt="Icon of  an arrow, pointing right"
                   />
-                  <h4>To: {isDestination}</h4>
+                  <h4>To: {destination}</h4>
 
                   <p>{oddNumbers[index].time}</p>
                 </div>
@@ -374,7 +371,7 @@ function HandleTripSearch() {
                   }}
                 >
                   <p>
-                    for {isPassengers} passengers ({isTotalCost}kr)
+                    for {passengers} passengers ({totalcost}kr)
                   </p>
                   <button
                     style={{
