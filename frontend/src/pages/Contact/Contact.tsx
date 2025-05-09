@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import "../../App.css";
 import { useState, useEffect } from "react";
+import backgroundPattern from "../../assets/travelroutes.jpg"
 
 interface CrewDetailProps {
   name: string;
@@ -12,6 +13,7 @@ interface CrewDetailProps {
 
 const Main = styled.main`
   margin: 0;
+  background-image:url(${backgroundPattern});
 `;
 
 const CrewMainContainer = styled.div`
@@ -21,7 +23,7 @@ const CrewMainContainer = styled.div`
   align-items: center;
   justify-content: center;
   font-family: MainPageFont;
-  margin: 10px auto;
+  margin: 0px auto;
   width: fit-content;
   padding: 5%;
   gap: 35px;
@@ -48,7 +50,8 @@ function Contact() {
               isCrewDb.map((crewDetail: CrewDetailProps) => (
                 <div
                   style={{
-                    backgroundColor: "#629085",
+                    backgroundColor: "#156063",
+                    borderRadius:"5px",
                     boxShadow: "1px 1px 15px 1px #cccbcb",
                     padding: "20px",
                     width: "15vw",
@@ -63,10 +66,10 @@ function Contact() {
                       alt="photo of a team member"
                     />
                   </div>
-                  <h3>{crewDetail.name}</h3>
+                  <h3 style={{color:"#E8EDF2"}}>{crewDetail.name}</h3>
 
-                  <h4>{crewDetail.role}</h4>
-                  <p>{crewDetail.email}</p>
+                  <h4 style={{color:"#E8EDF2"}}>{crewDetail.role}</h4>
+                  <p style={{color:"#E8EDF2"}}>{crewDetail.email}</p>
                 </div>
               ))}
           </CrewMainContainer>

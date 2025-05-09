@@ -43,7 +43,7 @@ CREATE TABLE
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     station_id INTEGER,
-    zone_id INTEGER,
+    zone_id INTEGER NOT NULL,
     FOREIGN KEY (zone_id) REFERENCES zones (id) FOREIGN KEY (station_id) REFERENCES stations (id)
   );
 
@@ -93,6 +93,23 @@ FROM
   zones
 WHERE
   name = 'A';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 INSERT INTO
   routes (
@@ -254,19 +271,19 @@ VALUES
 INSERT INTO
   stops (name, zone_id)
 VALUES
-  ('Kongahällagatan', 2),
-  ('Västra Parken', 2),
-  ('Kexbageriet', 2),
-  ('Fars Hatt', 2),
-  ('Eriksdal', 1),
-  ('Backadalsmotet', 1),
-  ('Hjalmar Brantingsplatsen', 1),
-  ('Nordstan', 1),
-  ('Polhemsplatsen', 1),
-  ('Heden', 1),
-  ('Berzeliigatan', 1),
-  ('Korsvägen', 1),
-  ('Liseberg Station', 1),
+  ('kongahällagatan', 2),
+  ('västra Parken', 2),
+  ('kexbageriet', 2),
+  ('fars Hatt', 2),
+  ('eriksdal', 1),
+  ('backadalsmotet', 1),
+  ('hjalmar Brantingsplatsen', 1),
+  ('nordstan', 1),
+  ('polhemsplatsen', 1),
+  ('heden', 1),
+  ('berzeliigatan', 1),
+  ('korsvägen', 1),
+  ('liseberg Station', 1),
   ('nol station', 3),
   ('nödinge station', 3),
   ('bohus station', 3),

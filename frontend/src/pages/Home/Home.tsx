@@ -16,12 +16,13 @@ const WelcomeMessage = styled.div`
 `;
 const Main = styled.main`
   margin: 5% auto;
-  background-color: white;
+  background-color: #d5e0ec;
   width: 60%;
   padding: 15px;
   color: #0e293e;
   border-radius: 3px;
-  box-shadow: 1px 1px 15px 1px #e9e9e9;
+  border:solid #0e293e 1.5px;
+  box-shadow: 1px 1px 5px 1px #cfcece;
 `;
 
 const WelcomeSection = styled.div`
@@ -38,6 +39,7 @@ const WelcomeSection = styled.div`
 function Home() {
   return (
     <>
+
       <WelcomeMessage>
         <h1>Welcome to Logoipsum Adventures</h1>
       </WelcomeMessage>
@@ -73,6 +75,7 @@ function Home() {
           </p>
         </WelcomeSection>
       </Main>
+
     </>
   );
 }

@@ -20,7 +20,7 @@ const Main = styled.main`
   align-items: center;
   padding: 5px 20px;
   justify-content: space-between;
-  background-color: #629085;
+  background-color: #154263;
   height: fit-content;
 `;
 function Footer() {

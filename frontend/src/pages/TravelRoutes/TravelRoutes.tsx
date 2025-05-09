@@ -1,11 +1,6 @@
 import styled from "styled-components";
-import myBusStop from "../../assets/bus-stop.jpg";
+import myBusStop from "../../assets/travelroutes.jpg";
 import { useState, useEffect } from "react";
-
-interface TravelRoutes {
-  //TODO: Varför fungerar inte detta?
-  timeTable: { stops: Array<string>; timetable: Array<number> };
-}
 
 const Main = styled.main`
   background-image: url(${myBusStop});
@@ -30,9 +25,19 @@ const MainContainer = styled.div`
 
 function TravelRoutes() {
   const [timeTable, setTimeTable] = useState([]);
-  const [stations, setStations] = useState([]);
+  const [stations, setStations] = useState(
+    Array<{
+      zone_id: number;
+      id: number;
+      route_to_name: string;
+      route_from_name: string;
+    }> || []
+  );
+  const [stops, setStops] = useState(
+    Array<{ name: string; zone_id: number; id: number }> || []
+  );
   useEffect(() => {
-    fetch("http://localhost:8080/routes")
+    fetch("http://localhost:8080/travelRoutes")
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -40,10 +45,18 @@ function TravelRoutes() {
       });
   }, []);
   useEffect(() => {
+    fetch("http://localhost:8080/routes/stops")
+      .then((response) => response.json())
+      .then((result) => {
+        setStops(result);
+        console.log(result);
+      });
+  }, []);
+  useEffect(() => {
     fetch("http://localhost:8080/timetable")
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+        //console.log(result);
         setTimeTable(Object.values(result));
       });
   }, []);
@@ -54,52 +67,57 @@ function TravelRoutes() {
         <MainContainer>
           {/* Div */}
           {timeTable &&
-            stations.map(
-              (station: {
-                route_from_name: string;
-                route_to_name: string;
-                id: number;
-              }) => (
-                <div key={station.id}>
-                  <h2>
-                    {station.route_from_name} - {station.route_to_name}{" "}
-                  </h2>
+            stations.map((station) => (
+              <div key={station.id}>
+                <h2>
+                  {station.route_from_name} - {station.route_to_name}{" "}
+                </h2>
+                <div style={{display: "inline-flex", gap:"10px", justifyContent:"space-evenly",alignItems:"center", width:"fit-content", flexWrap:"wrap"}}>
+                {stops
+                  .filter((findstops) => findstops.zone_id === station.zone_id)
+                  .map((stopsByZone) => (
 
-                  <h6>The line depart every full hour from the end stops</h6>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: "10px",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "5px",
-                      flexWrap: "wrap",
-                      width: "60%",
-                      marginLeft: "auto",
-                      marginRight: "auto",
-                    }}
-                  >
-                    {timeTable.map(
-                      (travelStops: { time: string; id: number }) => (
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            flexWrap: "wrap",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                          key={travelStops.id}
-                        >
-                          <p>{travelStops.time}</p>
-                        </div>
-                      )
-                    )}
-                  </div>
+                      <div key={stopsByZone.id}>
+                        <p>{stopsByZone.name} -</p>
+                      </div>
+
+
+                  ))}</div>
+
+                <h6>The line depart every full hour from the end stops</h6>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "10px",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "5px",
+                    flexWrap: "wrap",
+                    width: "60%",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  }}
+                >
+                  {timeTable.map(
+                    (travelStops: { time: string; id: number }) => (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        key={travelStops.id}
+                      >
+                        <p>{travelStops.time}</p>
+                      </div>
+                    )
+                  )}
                 </div>
-              )
-            )}
+              </div>
+            ))}
         </MainContainer>
       </Main>
     </>

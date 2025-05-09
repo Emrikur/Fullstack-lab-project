@@ -6,10 +6,11 @@ import { useState, useEffect } from "react";
 import plusButton from "../assets/plus.png";
 import minusButton from "../assets/minus.png";
 import ArrowRight from "../assets/arrow-right.png";
-import { format } from "date-fns";
+import { format, parse, isAfter } from "date-fns";
 import Loading from "../assets/way.gif";
 
 const currentTime = format(new Date(), "hh:mm aa");
+const currentCompareTime = format(new Date(), "HH:mm");
 const evenNumbers: Array<{ time: string }> = [];
 const oddNumbers: Array<{ time: string }> = [];
 
@@ -48,8 +49,8 @@ const TripResults = styled.div`
   width: 70%;
   min-height: 70vh;
   height: auto;
-  border: 0.3px #e9e9e9 solid;
-  box-shadow: 1px 1px 15px 1px #e9e9e9;
+  border: 0.3px 	#154263 solid;
+  box-shadow: 1px 1px 5px 1px #e9e9e9;
   margin: 25px auto;
   background-color: white;
 `;
@@ -57,10 +58,10 @@ const FormButton = styled.button`
   width: 20%;
   height: 50px;
   border-radius: 10px;
-  background-color: #629085;
+  background-color: #EAC67A;
   font-weight: bold;
   font-size: 20px;
-  color: white;
+  color: #1E1F26;
 `;
 
 function HandleTripSearch() {
@@ -71,6 +72,7 @@ function HandleTripSearch() {
         setTrip(result);
       });
   }, []);
+
   useEffect(() => {
     fetch("http://localhost:8080/timetable")
       .then((response) => response.json())
@@ -81,11 +83,9 @@ function HandleTripSearch() {
 
   const [trip, setTrip] = useState(
     Array<{
-      route_from_name: string;
-      route_to_name: string;
+      name: string;
       id: number;
       price: number;
-      route_from_id: number;
     }> || []
   );
   const [passengers, setPassengers] = useState(0);
@@ -97,8 +97,17 @@ function HandleTripSearch() {
   const [timetable, setTimetable] = useState(
     Array<{ time: string; id: number }> || []
   );
-  const cityFrom = trip.find((city) => city.route_from_name === departure);
-  const cityTo = trip.find((city) => city.route_to_name === destination);
+  const cityFrom = trip.find((city) => city.name === departure);
+  const cityTo = trip.find((city) => city.name === destination);
+
+  //Matchar currentTime med en tid i timetable
+  const filterTimetable = timetable.filter((startTime) => {
+    const newTime = parse(startTime.time, "HH:mm", new Date());
+    const nowTime = parse(currentCompareTime, "HH:mm", new Date());
+    return isAfter(newTime, nowTime);
+  });
+
+
   function fromCity(props: { target: { value: string } }) {
     setDeparture(props.target.value);
   }
@@ -112,7 +121,7 @@ function HandleTripSearch() {
       if (passengers <= 9) {
         setPassengers(passengers + 1);
         setSearched(false);
-        console.log("Nr of passengers", passengers + 1);
+
       } else {
         alert("May only book 10 tickets");
       }
@@ -123,13 +132,13 @@ function HandleTripSearch() {
       if (passengers >= 1) {
         setPassengers(passengers - 1);
         setSearched(false);
-        console.log("Nr of passengers", passengers - 1);
+
       }
     }
   }
   useEffect(() => {
     setTotalCost(passengers * cost);
-    console.log("Total cost körs", passengers * cost);
+    // console.log("Total cost körs", passengers * cost);
   }, [passengers, cost]);
 
   function goSearch(event: { preventDefault: () => void }) {
@@ -154,12 +163,13 @@ function HandleTripSearch() {
   function handleSearch(city: { name: string; price: number }) {
     setDestination(city.name);
 
+    // Delar upp avgångstider och ankomsttider
     if (timetable) {
-      for (let i = 0; i < timetable.length; i++) {
+      for (let i = 0; i < filterTimetable.length; i++) {
         if (i % 2 === 0) {
-          evenNumbers.push(timetable[i]);
+          evenNumbers.push(filterTimetable[i]);
         } else {
-          oddNumbers.push(timetable[i]);
+          oddNumbers.push(filterTimetable[i]);
         }
       }
     }
@@ -185,24 +195,36 @@ function HandleTripSearch() {
                 value={departure}
               />
             </Formlabel>
-            <div style={{ display: "flex", gap: "15px" }}>
+            <div
+              style={{
+                display: "flex",
+                width: "50%",
+                paddingLeft: "7px",
+                paddingRight: "5.7px",
+                transform: "translateX(-1.5%)",
+                backgroundColor: "white",
+                flexWrap: "wrap",
+                gap: "15px",
+                position: "absolute",
+                zIndex: "2",
+              }}
+            >
               {trip
                 .filter(
                   (searchCity) =>
-                    searchCity.route_from_name &&
-                    searchCity.route_from_name !== departure &&
-                    searchCity.route_from_id &&
-                    searchCity.route_from_name.includes(departure)
+                    searchCity.name &&
+                    searchCity.name !== departure &&
+                    searchCity.name.includes(departure)
                 )
                 .map(
-                  (city: { route_from_name: string; id: number }) =>
+                  (city: { name: string; id: number }) =>
                     departure.length > 0 && (
                       <p
                         key={city.id}
-                        onClick={() => setDeparture(city.route_from_name)}
+                        onClick={() => setDeparture(city.name)}
                         style={{ textDecoration: "underline" }}
                       >
-                        {city.route_from_name}
+                        {city.name}
                       </p>
                     )
                 )}
@@ -216,37 +238,50 @@ function HandleTripSearch() {
               <input
                 id="destination_id"
                 onChange={toCity}
-                style={{ padding: "5px 15px 5px 0px", border: "none" }}
+                style={{
+                  padding: "5px 15px 5px 0px",
+                  border: "none",
+                  zIndex: "1",
+                }}
                 type="text"
                 value={destination.toLocaleLowerCase()}
               />
             </Formlabel>
-            <div style={{ display: "flex", gap: "15px" }}>
+            <div
+              style={{
+                display: "flex",
+                width: "50%",
+                paddingLeft: "7px",
+                paddingRight: "5.7px",
+                transform: "translateX(-1.5%)",
+                backgroundColor: "white",
+                flexWrap: "wrap",
+                gap: "15px",
+                position: "absolute",
+                zIndex: "2",
+              }}
+            >
               {trip
                 .filter(
-                  (searchCity: { route_to_name: string }) =>
-                    searchCity.route_to_name &&
-                    searchCity.route_to_name !== destination &&
-                    searchCity.route_to_name.includes(destination)
+                  (searchCity: { name: string }) =>
+                    searchCity.name &&
+                    searchCity.name !== destination &&
+                    searchCity.name.includes(destination)
                 )
                 .map(
-                  (city: {
-                    route_to_name: string;
-                    id: number;
-                    price: number;
-                  }) =>
+                  (city: { name: string; id: number; price: number }) =>
                     destination.length > 0 && (
                       <p
                         key={city.id}
                         onClick={() =>
                           handleSearch({
-                            name: city.route_to_name,
+                            name: city.name,
                             price: city.price,
                           })
                         }
                         style={{ textDecoration: "underline" }}
                       >
-                        {city.route_to_name}
+                        {city.name}
                       </p>
                     )
                 )}
@@ -319,8 +354,8 @@ function HandleTripSearch() {
         searched !== false &&
         trip &&
         timetable ? (
-          timetable
-            .slice(9, 22)
+          filterTimetable
+            .slice(0, 7)
             .map((TTInfo: { time: string; id: number }, index) => (
               <div
                 key={TTInfo.id}
@@ -330,8 +365,9 @@ function HandleTripSearch() {
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "space-evenly",
-                  backgroundColor: "beige",
+                  backgroundColor: "#d5e0ec",
                   border: "#629085, solid 1px",
+                  borderRadius:"5px",
                   width: "60%",
                   margin: "15px auto",
                   padding: "15px",
@@ -348,7 +384,7 @@ function HandleTripSearch() {
                     margin: "auto",
                   }}
                 >
-                  <h4>{departure} </h4>
+                  <h4>From: {departure} </h4>
 
                   <p>{evenNumbers[index].time}</p>
 
@@ -380,11 +416,11 @@ function HandleTripSearch() {
                       height: "auto",
                       padding: "5px",
                       borderRadius: "10px",
-                      backgroundColor: "#629085",
+                      backgroundColor: "#EAC67A",
                       fontWeight: "bold",
                       textDecoration: "underline",
                       fontSize: "16px",
-                      color: "white",
+                      color: "black",
                     }}
                   >
                     See details

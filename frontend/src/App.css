@@ -4,6 +4,8 @@
     format("otf");
 }
 
+
+
 li {
   font-family: MainPageFont;
   font-weight: normal;
@@ -42,4 +44,5 @@ h6 {
   margin: 0;
   overflow-x: hidden;
   text-align: center;
+  background-color: #E8EDF2;
 }
