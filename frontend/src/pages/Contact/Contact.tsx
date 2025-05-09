@@ -13,7 +13,7 @@ interface CrewDetailProps {
 
 const Main = styled.main`
   margin: 0;
-  background-image:url(${backgroundPattern});
+  background-color:#e8edf2;
 `;
 
 const CrewMainContainer = styled.div`
@@ -50,26 +50,29 @@ function Contact() {
               isCrewDb.map((crewDetail: CrewDetailProps) => (
                 <div
                   style={{
-                    backgroundColor: "#156063",
-                    borderRadius:"5px",
+                    backgroundColor: "white",
+                    border:"solid #154263 1.5px",
                     boxShadow: "1px 1px 15px 1px #cccbcb",
                     padding: "20px",
-                    width: "15vw",
-                    height: "50vh",
+                    minWidth:"15vw",
+                    width: "auto",
+                    maxWidth:"20vw",
+                    minHeight:"60vh",
+                    height: "auto",
                   }}
                   key={crewDetail.id}
                 >
                   <div style={{ width: "fit-content", margin: "auto" }}>
                     <img
-                      style={{ width: "70%", height: "auto" }}
+                      style={{ width: "70%", height: "auto", borderRadius:"5px", border:"solid lightgrey 1px" }}
                       src={`http://localhost:8080/${crewDetail.image_path}`}
                       alt="photo of a team member"
                     />
                   </div>
-                  <h3 style={{color:"#E8EDF2"}}>{crewDetail.name}</h3>
+                  <h3 style={{color:"#1E1F26"}}>{crewDetail.name}</h3>
 
-                  <h4 style={{color:"#E8EDF2"}}>{crewDetail.role}</h4>
-                  <p style={{color:"#E8EDF2"}}>{crewDetail.email}</p>
+                  <h4 style={{color:"#1E1F26"}}>{crewDetail.role}</h4>
+                  <p style={{color:"#1E1F26"}}>{crewDetail.email}</p>
                 </div>
               ))}
           </CrewMainContainer>
