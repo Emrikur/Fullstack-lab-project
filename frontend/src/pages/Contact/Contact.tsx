@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import "../../App.css";
 import { useState, useEffect } from "react";
-import backgroundPattern from "../../assets/travelroutes.jpg"
 
 interface CrewDetailProps {
   name: string;
