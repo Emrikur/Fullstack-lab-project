@@ -9,7 +9,7 @@ import ArrowRight from "../assets/arrow-right.png";
 import { format, parse, isAfter } from "date-fns";
 import Loading from "../assets/way.gif";
 
-const currentTime = format(new Date(), "hh:mm aa");
+const currentTime = format(new Date(), "HH:mm");
 const currentCompareTime = format(new Date(), "HH:mm");
 const evenNumbers: Array<{ time: string }> = [];
 const oddNumbers: Array<{ time: string }> = [];
